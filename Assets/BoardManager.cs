@@ -13,12 +13,49 @@ public class BoardManager : MonoBehaviour
     public int[] lastTwoSprites;
     public int[] lastRow;
     public int[] secondToLastRow;
+    public int score;
+
+    public float checkTimer;
+    public float checkDelay;
+    public bool changed;
+
+    PlayerManager playerManager;
     private void Awake()
     {
         lastRow = new int[boardSize.x];
         secondToLastRow = new int[boardSize.x];
         lastTwoSprites = new int[2];
+        score = 0;
         GenerateField();
+
+        playerManager = FindObjectOfType<PlayerManager>();
+    }
+    private void Update()
+    {
+        if (CheckIfTilesMoving()) 
+        { 
+            changed = true;
+            return; 
+        }
+        if (changed)
+        {
+            checkTimer = checkDelay;
+            playerManager.waiting = true;
+            changed = false;
+        }
+        
+        if(checkTimer <= 0f)
+        {
+            foreach (TileManager tile in FindObjectsOfType<TileManager>())
+            {
+                tile.CheckAdjacentTiles();
+            }
+            playerManager.waiting = false;
+        }
+        else
+        {
+            checkTimer -= Time.deltaTime;
+        }
     }
     private void GenerateField()
     {
@@ -67,5 +104,35 @@ public class BoardManager : MonoBehaviour
         lastTwoSprites[0] = lastTwoSprites[1];
         lastTwoSprites[1] = spriteIndex;
         return spriteIndex;
+    }
+
+    public void FreezeTiles()
+    {
+        foreach(TileManager tile in FindObjectsOfType<TileManager>())
+        {
+            tile.body.constraints = RigidbodyConstraints2D.FreezeAll;
+        }
+    }
+    public void UnFreezeTiles()
+    {
+        foreach (TileManager tile in FindObjectsOfType<TileManager>())
+        {
+            tile.body.constraints -= RigidbodyConstraints2D.FreezePositionY;
+        }
+    }
+    public void UpdateTileCheck()
+    {
+        changed = true;
+    }
+    public bool CheckIfTilesMoving()
+    {
+        foreach (TileManager tile in FindObjectsOfType<TileManager>())
+        {
+            if(tile.body.velocity.magnitude >= 0.01f)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

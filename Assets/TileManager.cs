@@ -10,37 +10,37 @@ public class TileManager : MonoBehaviour
     public BoardManager boardManager;
     public Vector2Int boardPosition;
     public int spriteID;
-    public bool checkedMatches;
-    public float checkTimer;
-    public float checkDelay;
+    //public bool checkedMatches;
+    //public float checkTimer;
+    //public float checkDelay;
     public List<GameObject> matches;
     private void Awake()
     {
         render = GetComponent<SpriteRenderer>();
         body = GetComponent<Rigidbody2D>();
         boardManager = FindObjectOfType<BoardManager>();
-        checkedMatches = true;
-        checkTimer = 0f;
+        //checkedMatches = true;
+        //checkTimer = 0f;
     }
 
     private void Update()
     {
-        if(body.velocity.magnitude > 0)
+        //if(body.velocity.magnitude > 0)
         {
-            checkedMatches = false;
-            checkTimer = checkDelay;
+            //checkedMatches = false;
+            //checkTimer = checkDelay;
         }
-        else
+        //else
         {
-            checkTimer -= Time.deltaTime;
-            if (!checkedMatches && checkTimer <= 0f)
+            //checkTimer -= Time.deltaTime;
+            //if (!checkedMatches && checkTimer <= 0f)
             {
-                CheckAdjacentGems();
+                //CheckAdjacentGems();
             }
         }
     }
 
-    public void CheckAdjacentGems()
+    public void CheckAdjacentTiles()
     {
         matches.Clear();
 
@@ -56,9 +56,10 @@ public class TileManager : MonoBehaviour
                 Destroy(gem);
             }
             Destroy(this.gameObject);
+            boardManager.UpdateTileCheck();
         }
 
-        checkedMatches = true;
+        //checkedMatches = true;
     }
 
     private List<GameObject> FindMatch(Vector2 castDir)
@@ -82,13 +83,16 @@ public class TileManager : MonoBehaviour
     {
         boardPosition += new Vector2Int((int)(newPosition.x - this.transform.position.x), (int)(newPosition.y - this.transform.position.y));
         this.transform.position = newPosition;
-        checkedMatches = false;
-        checkTimer = checkDelay;
+        //checkedMatches = false;
+        //checkTimer = checkDelay;
+        boardManager.UnFreezeTiles();
+        boardManager.UpdateTileCheck();
     }
 
     private void OnDestroy()
     {
         if (!this.gameObject.scene.isLoaded) return;
+        boardManager.score += 100;
         boardManager.GenerateTile(boardPosition, false);
     }
 }

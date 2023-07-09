@@ -9,13 +9,16 @@ public class PlayerManager : MonoBehaviour
     public LayerMask tileMask;
     public BoardManager boardManager;
     public Vector2Int boardPosition;
+    public bool waiting;
     private void Awake()
     {
         inputHandler = GetComponent<InputHandler>();
         boardManager = FindObjectOfType<BoardManager>();
+        waiting = true;
     }
     private void Update()
     {
+        if (waiting) { return; }
         inputHandler.TickInput(Time.deltaTime);
     }
     private void LateUpdate()
@@ -47,6 +50,8 @@ public class PlayerManager : MonoBehaviour
     public void SwapTile(Vector2Int direction)
     {
         Collider2D hitCollider = Physics2D.OverlapCircle(this.transform.position + (Vector3Int)direction, 0.1f, tileMask);
+        if (hitCollider == null) { return; }
+        boardManager.FreezeTiles();
         TileManager swapTile = hitCollider.transform.gameObject.GetComponent<TileManager>();
         swapTile.MoveTile(this.transform.position);
         this.transform.position = this.transform.position + (Vector3Int)direction;
