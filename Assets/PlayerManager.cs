@@ -5,20 +5,57 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     public int spriteID;
+    public int nextSpriteID;
     public InputHandler inputHandler;
     public LayerMask tileMask;
     public BoardManager boardManager;
     public Vector2Int boardPosition;
     public bool waiting;
+    public float changeTimer;
+    public float changeDelay;
+    public UIManager uiManager;
+    public Sprite nextSprite;
     private void Awake()
     {
         inputHandler = GetComponent<InputHandler>();
         boardManager = FindObjectOfType<BoardManager>();
+        uiManager = FindObjectOfType<UIManager>();
+        uiManager.SetUpChangeTimer(changeDelay);
+        nextSpriteID = spriteID;
+        while (nextSpriteID == spriteID)
+        {
+            nextSpriteID = Random.Range(0, boardManager.playerSprites.Count);
+        }
+        nextSprite = boardManager.playerSprites[nextSpriteID];
+        uiManager.SetNextSpriteImage(nextSprite);
+        changeTimer = changeDelay;
+        uiManager.SetChangeTimer(changeTimer);
         waiting = true;
     }
     private void Update()
     {
         if (waiting) { return; }
+
+        if (changeTimer <= 0)
+        {
+            spriteID = nextSpriteID;
+            this.GetComponent<SpriteRenderer>().sprite = nextSprite;
+
+            while (nextSpriteID == spriteID)
+            {
+                nextSpriteID = Random.Range(0, boardManager.playerSprites.Count);
+            }
+
+            nextSprite = boardManager.playerSprites[nextSpriteID];
+            uiManager.SetNextSpriteImage(nextSprite);
+            changeTimer = changeDelay;
+        }
+        else
+        {
+            changeTimer -= Time.deltaTime;
+            uiManager.SetChangeTimer(changeTimer);
+        }
+
         inputHandler.TickInput(Time.deltaTime);
     }
     private void LateUpdate()
@@ -60,6 +97,6 @@ public class PlayerManager : MonoBehaviour
     private void OnDestroy()
     {
         if (!this.gameObject.scene.isLoaded) return;
-        boardManager.GenerateTile(boardPosition, false);
+        boardManager.GenerateTile(boardPosition + new Vector2Int(0,3), false);
     }
 }

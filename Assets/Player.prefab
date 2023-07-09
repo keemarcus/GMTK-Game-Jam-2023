@@ -34,7 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4999063196936885218
 SpriteRenderer:
@@ -148,12 +148,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteID: 0
+  nextSpriteID: 0
   inputHandler: {fileID: 0}
   tileMask:
     serializedVersion: 2
     m_Bits: 4096
   boardManager: {fileID: 0}
   boardPosition: {x: 0, y: 0}
+  waiting: 0
+  changeTimer: 0
+  changeDelay: 10
+  uiManager: {fileID: 0}
+  nextSprite: {fileID: 0}
 --- !u!114 &-1322512460501832604
 MonoBehaviour:
   m_ObjectHideFlags: 0

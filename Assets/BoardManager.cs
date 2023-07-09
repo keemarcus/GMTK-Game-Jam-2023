@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BoardManager : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class BoardManager : MonoBehaviour
     public bool changed;
 
     PlayerManager playerManager;
+    public ScoreManager scoreManager;
     private void Awake()
     {
         lastRow = new int[boardSize.x];
@@ -29,6 +31,7 @@ public class BoardManager : MonoBehaviour
         GenerateField();
 
         playerManager = FindObjectOfType<PlayerManager>();
+        scoreManager = FindObjectOfType<ScoreManager>();
     }
     private void Update()
     {
@@ -43,7 +46,19 @@ public class BoardManager : MonoBehaviour
             playerManager.waiting = true;
             changed = false;
         }
-        
+        if(checkTimer <= (checkDelay * -2))
+        {
+            if (playerManager == null)
+            {
+                scoreManager.score = score;
+                SceneManager.LoadScene("Menu");
+            }
+        }
+        else
+        {
+            checkTimer -= Time.deltaTime;
+        }
+
         if(checkTimer <= 0f)
         {
             foreach (TileManager tile in FindObjectsOfType<TileManager>())
@@ -51,10 +66,6 @@ public class BoardManager : MonoBehaviour
                 tile.CheckAdjacentTiles();
             }
             playerManager.waiting = false;
-        }
-        else
-        {
-            checkTimer -= Time.deltaTime;
         }
     }
     private void GenerateField()

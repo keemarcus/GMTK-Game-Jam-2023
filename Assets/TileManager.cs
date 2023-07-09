@@ -13,47 +13,81 @@ public class TileManager : MonoBehaviour
     //public bool checkedMatches;
     //public float checkTimer;
     //public float checkDelay;
-    public List<GameObject> matches;
+    //public List<GameObject> matches;
+    public AudioClip normalComboClip;
+    public AudioClip bigComboClip;
+    public AudioSource audioSource;
     private void Awake()
     {
         render = GetComponent<SpriteRenderer>();
         body = GetComponent<Rigidbody2D>();
         boardManager = FindObjectOfType<BoardManager>();
+        audioSource = boardManager.gameObject.GetComponent<AudioSource>();
         //checkedMatches = true;
         //checkTimer = 0f;
     }
 
-    private void Update()
-    {
-        //if(body.velocity.magnitude > 0)
-        {
-            //checkedMatches = false;
-            //checkTimer = checkDelay;
-        }
-        //else
-        {
-            //checkTimer -= Time.deltaTime;
-            //if (!checkedMatches && checkTimer <= 0f)
-            {
-                //CheckAdjacentGems();
-            }
-        }
-    }
-
     public void CheckAdjacentTiles()
     {
-        matches.Clear();
+        //matches.Clear();
 
         List<GameObject> upMatches = FindMatch(Vector2.up);
         List<GameObject> rightMatches = FindMatch(Vector2.right);
         List<GameObject> downMatches = FindMatch(Vector2.down);
         List<GameObject> leftMatches = FindMatch(Vector2.left);
 
-        if (upMatches.Count >= 2 || rightMatches.Count >= 2 || downMatches.Count >= 2 || leftMatches.Count >= 2)
+        /*if (upMatches.Count >= 2 || rightMatches.Count >= 2 || downMatches.Count >= 2 || leftMatches.Count >= 2)
         {
+            if (matches.Count > 2) { audioSource.PlayOneShot(bigComboClip); }
+            else { audioSource.PlayOneShot(normalComboClip); }
             foreach (GameObject gem in matches)
             {
                 Destroy(gem);
+            }
+            Destroy(this.gameObject);
+            boardManager.UpdateTileCheck();
+        }*/
+
+        if (upMatches.Count >= 2)
+        {
+            if (upMatches.Count > 2) { audioSource.PlayOneShot(bigComboClip); }
+            else { audioSource.PlayOneShot(normalComboClip); }
+            foreach (GameObject tile in upMatches)
+            {
+                Destroy(tile);
+            }
+            Destroy(this.gameObject);
+            boardManager.UpdateTileCheck();
+        }
+        if (rightMatches.Count >= 2)
+        {
+            if (rightMatches.Count > 2) { audioSource.PlayOneShot(bigComboClip); }
+            else { audioSource.PlayOneShot(normalComboClip); }
+            foreach (GameObject tile in rightMatches)
+            {
+                Destroy(tile);
+            }
+            Destroy(this.gameObject);
+            boardManager.UpdateTileCheck();
+        }
+        if (downMatches.Count >= 2)
+        {
+            if (downMatches.Count > 2) { audioSource.PlayOneShot(bigComboClip); }
+            else { audioSource.PlayOneShot(normalComboClip); }
+            foreach (GameObject tile in downMatches)
+            {
+                Destroy(tile);
+            }
+            Destroy(this.gameObject);
+            boardManager.UpdateTileCheck();
+        }
+        if (leftMatches.Count >= 2)
+        {
+            if (leftMatches.Count > 2) { audioSource.PlayOneShot(bigComboClip); }
+            else { audioSource.PlayOneShot(normalComboClip); }
+            foreach (GameObject tile in leftMatches)
+            {
+                Destroy(tile);
             }
             Destroy(this.gameObject);
             boardManager.UpdateTileCheck();
@@ -69,7 +103,7 @@ public class TileManager : MonoBehaviour
         while (hit.collider != null && ((hit.collider.GetComponent<TileManager>() != null && hit.collider.GetComponent<TileManager>().spriteID == this.spriteID) || (hit.collider.GetComponent<PlayerManager>() != null && hit.collider.GetComponent<PlayerManager>().spriteID == this.spriteID)))// hit.collider.GetComponent<SpriteRenderer>().sprite == render.sprite)
         {
             matchingTiles.Add(hit.collider.gameObject);
-            matches.Add(hit.collider.gameObject);
+            //matches.Add(hit.collider.gameObject);
             /*foreach(GameObject tile in hit.collider.gameObject.GetComponent<TileManager>().matches)
             {
                 matches.Add(tile);

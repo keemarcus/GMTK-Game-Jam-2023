@@ -151,7 +151,7 @@ MonoBehaviour:
   boardManager: {fileID: 0}
   boardPosition: {x: 0, y: 0}
   spriteID: 0
-  checkedMatches: 0
-  checkTimer: 0
-  checkDelay: 0.25
   matches: []
+  normalComboClip: {fileID: 8300000, guid: 79180f511d89441b9aa23ccae1992fe0, type: 3}
+  bigComboClip: {fileID: 8300000, guid: 7bd6b897eb5ca4b7d88a205c4a51640c, type: 3}
+  audioSource: {fileID: 0}
